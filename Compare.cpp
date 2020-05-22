@@ -1,7 +1,10 @@
 #include <chrono>
 #include <ctime>
 #include <iostream>
+#include <map>
 #include <ratio>
+#include <tuple>
+#include <utility>
 using namespace std;
 using namespace std::chrono;
 //      Struct + Khai bao
@@ -321,7 +324,7 @@ bool is_subsequence(List l1, List l2) {
   }
   return false;
 }
-// thao tac voi nhieu danh sach
+// sap xep danh sach tang dan
 void SelectionSort(List &l) {
   int j = 0;
   int temp = 0;
@@ -345,6 +348,89 @@ void SelectionSort(List &l) {
     }
   }
 }
+// chia danh sach
+tuple<List, List, List> partition(List &l, int x) {
+  List l2, l3;
+  Node *node = l.head;
+  Node *p = NULL;
+  Node *p2 = NULL;
+  Node *q = NULL;
+  Node *q2 = NULL;
+  init_list(l2);
+  init_list(l3);
+  while (node != NULL) {
+    if (node->value < x) {
+      if (p == NULL) {
+        p = p2 = node;
+      } else {
+        p2->next = node;
+        p2 = node;
+      }
+    } else if (node->value == x) {
+      Add_Head(l2, node->value);
+    } else {
+      if (q == NULL) {
+        q = q2 = node;
+      } else {
+        q2->next = node;
+        q2 = node;
+      }
+    }
+    node = node->next;
+  }
+  delete node;
+  init_list(l);
+  p2->next = NULL;
+  q2->next = NULL;
+  l3.head = q;
+  l3.tail = q2;
+  l.head = p;
+  l.tail = p2;
+  return std::make_tuple(l, l2, l3);
+}
+void join(List &l, List &l2) {
+  if (l.head == NULL) {
+    l.head = l2.head;
+    l.tail = l2.tail;
+  } else if (l2.head == NULL)
+    return;
+  else if (l.head->value == l2.head->value)
+    return;
+  else {
+    Node *p = l.tail;
+    p->next = l2.head;
+    l.tail = l2.tail;
+  }
+}
+// tach danh sach
+inline pair<List, List> split(List &l) {
+  int i = 0;
+  Node *head1 = l.head;
+  Node *head2 = NULL;
+  Node *temp = head1;
+  head2 = temp->next;
+  Node *holder1 = head1;
+  Node *holder2 = head2;
+  while (temp != NULL) {
+    ++i;
+    if (i % 2 == 1 && i != 1) {
+      holder1->next = temp;
+      holder1 = holder1->next;
+    }
+    if (i % 2 == 0 && i != 2) {
+      holder2->next = temp;
+      holder2 = holder2->next;
+    }
+    temp = temp->next;
+  }
+  holder1->next = NULL;
+  holder2->next = NULL;
+  pair<List, List> gan;
+  gan.first.head = head1;
+  gan.second.head = head2;
+  return gan;
+}
+// tron 2 mang
 List merge_2_sorted_lists(List &l1, List &l2) {
   Node *p1 = l1.head;
   Node *p2 = l2.head;
