@@ -25,6 +25,48 @@ void init_list(List &l) { l.head = l.tail = NULL; }
 ///////////////////////////////////
 //      Dynamic_array      //
 // #Add code here
+void Input_Array(Array& a, int x) { //them phan tu vao cuoi mang
+    if (a.n == 0) {
+        a.arr = new int[2];
+        a.arr[0] = x;
+        a.n = 1; a.capacity = 2;
+    }
+    else if (a.n < a.capacity) {
+        a.arr[a.n] = x;
+        a.n++;
+    }
+    else if (a.n >= a.capacity) {
+        auto b = new int[a.capacity * 2];
+        for (int i = 0; i < a.n; i++) { b[i] = a.arr[i]; }
+        b[a.n] = x;
+        delete a.arr;
+        a.arr = b;
+        a.n++;
+        a.capacity *= 2;
+    }
+}
+void Add_into_any_position(Array& a, int x, int pos) {
+    if (a.n < a.capacity) {
+        if (pos == a.n) {
+            a.arr[a.n] = x;
+            a.n++;
+        }
+        else if (pos == 0) {
+            for (int i = a.n; i > 0; i--) {
+                a.arr[i] = a.arr[i - 1];
+            }
+            a.arr[0] = x;
+            a.n++;
+        }
+        else if (pos != 0 && pos != a.n) {
+            for (int i = a.n; i > pos; i--) {
+                a.arr[i] = a.arr[i - 1];
+            }
+            a.arr[pos] = x;
+            a.n++;
+        }
+    }
+}
 ///////////////////////////////////
 
 //////////////////////////////////
