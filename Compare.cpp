@@ -83,45 +83,7 @@ Node *CreateNode(int value) {
   pNode->next = nullptr;
   return pNode;
 }
-// cac thao tac them vao danh sach
-void Add_Head(List &l, int value) {
-  Node *pNode = CreateNode(value);
-  if (l.head == nullptr) {
-    l.head = pNode;
-    l.tail = l.head;
-  } else {
-    pNode->next = l.head;
-    l.head = pNode;
-  }
-}
-void Add_Tail(List &l, int value) {
-  Node *pNode = CreateNode(value);
-  if (l.head == nullptr) {
-    l.head = pNode;
-    l.tail = l.head;
-  } else {
-    l.tail->next = pNode;
-    l.tail = pNode;
-    pNode->next = nullptr;
-  }
-}
-void Insert(List &l, int index, int value) {
-  Node *pNode = l.head;
-  while (pNode != nullptr) {
-    if (pNode->value == index) {
-      break;
-    }
-    pNode = pNode->next;
-  }
-  if (pNode == nullptr) {
-    return;
-  } else {
-    Node *ptemp = new Node;
-    ptemp->value = value;
-    ptemp->next = pNode->next;
-    pNode->next = ptemp;
-  }
-}
+
 // cac thao tac duyet mang
 Node *Find_Node(List &l, int value) {
   if (l.head == nullptr) {
@@ -143,11 +105,11 @@ int Find_Value_at_Index(List &l, int index) {
   int count = 0;
   Node *p = l.head;
   while (p != nullptr) {
-    p = p->next;
     if (count == index) {
       return p->value;
     }
     ++count;
+    p = p->next;
   }
   return -1;
 }
@@ -173,7 +135,7 @@ int getLength(List &l) {
   }
   return count;
 }
-void OutPut(List &l) {
+void OutPut_list(List &l) {
   if (l.head == 0) {
     cout << "emty!";
   } else {
@@ -184,7 +146,52 @@ void OutPut(List &l) {
     }
   }
 }
-
+// cac thao tac them vao danh sach
+void Add_Head(List &l, int value) {
+  Node *pNode = CreateNode(value);
+  if (l.head == nullptr) {
+    l.head = pNode;
+    l.tail = l.head;
+  } else {
+    pNode->next = l.head;
+    l.head = pNode;
+  }
+}
+void Add_Tail(List &l, int value) {
+  Node *pNode = CreateNode(value);
+  if (l.head == nullptr) {
+    l.head = pNode;
+    l.tail = l.head;
+  } else {
+    l.tail->next = pNode;
+    l.tail = pNode;
+    pNode->next = nullptr;
+  }
+}
+void Insert_list(List &l, int index, int value) {
+  Node *pNode = l.head;
+  int i = Find_Value_at_Index(l, index);
+  if (l.head->value == i) {
+    Node *temp = CreateNode(value);
+    temp->next = l.head->next;
+    l.head->next = temp;
+    return;
+  }
+  while (pNode != NULL) {
+    if (pNode->value == i) {
+      break;
+    }
+    pNode = pNode->next;
+  }
+  if (pNode == nullptr) {
+    Add_Head(l, value);
+  } else {
+    Node *p = new Node;
+    p->value = value;
+    p->next = pNode->next;
+    pNode->next = p;
+  }
+}
 // cac thao tac xoa
 void Del_Head(List &l) {
   if (l.head == nullptr) {
@@ -477,6 +484,7 @@ int main() {
   init_list(l);
   Array a;
   init_array(a);
+  srand(time(NULL));
   // So sanh
   /* Recycle key_word
    t1 = high_resolution_clock::now();
@@ -484,15 +492,15 @@ int main() {
    time_span = duration_cast<duration<double>>(t2 - t1);
    cout << " " << time_span.count() << " seconds.\n";*/
   // thao tac 1
-  srand(time(NULL));
   for (int i = 0; i < 5; i++) {
-    Add_Tail(l, rand());
+    Add_Tail(l, i);
   }
-  OutPut(l);
+  OutPut_list(l);
   cout << "\n";
-  
-  SelectionSort(l);
-  OutPut(l);
+  for (int i = 0; i < 5; i++) {
+    Insert_list(l, i / 2, -1);
+  }
+  OutPut_list(l);
 
   // thao tac 2
 
