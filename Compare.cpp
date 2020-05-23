@@ -330,6 +330,17 @@ Node *Find_Node(List &l, int value) {
   }
   return nullptr;
 }
+Node* Findnode2(List& l, int pos) {
+    if (l.head == nullptr) {
+        return NULL;
+    }
+    int m = 0;
+    for (Node* i = l.head; i != NULL; i = i->next) {
+        m += 1;
+        if (m == pos) return i;
+    }
+    return NULL;
+}
 int Find_Value_at_Index(List &l, int index) {
   int count = 0;
   Node *p = l.head;
