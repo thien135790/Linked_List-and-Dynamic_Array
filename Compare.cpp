@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <ctime>
 #include <iostream>
@@ -85,17 +86,12 @@ void Add_into_any_position(Array &a, int x, int pos) {
   }
 }
 // xoa vi tri bat ky
-void Delete_any_position(Array &a, int pos) {
-  if (a.n == 0)
-    ;
-  else {
-    if (pos < a.n) {
-      for (int i = pos; i < a.n - 1; i++) {
-        a.arr[i] = a.arr[i + 1];
-      }
-      a.n--;
-    }
+void Delete_any_position(Array &a, int index) {
+  a.n = a.capacity;
+  for (int i = index; i < a.n - 1; i++) {
+    a.arr[i] = a.arr[i + 1];
   }
+  --a.n;
 }
 // tra ve so luong phan tu cua mang
 int DemSoLuongPhanTu(Array a) { return a.n; }
@@ -114,6 +110,18 @@ int search(Array a, int x) {
   return -1;
 }
 // sap xep mang
+void SelectionSort_arr(Array &a) {
+  int i, j, min_idx;
+
+  for (i = 0; i < a.n - 1; i++) {
+    min_idx = i;
+    for (j = i + 1; j < a.n; j++)
+      if (a.arr[j] < a.arr[min_idx]) min_idx = j;
+
+    // Swap the found minimum element with the first element
+    swap(a.arr[min_idx], a.arr[i]);
+  }
+}
 void sort(int *&a, int n) {
   for (int i = 0; i < n - 1; i++) {
     for (int j = i + 1; j < n; j++) {
@@ -157,12 +165,8 @@ void Copy(Array a, Array &b) {
 }
 // dao mang
 void Dao_mang(Array &a) {
-  auto b = new int[a.n];
-  for (int i = 0; i < a.n; i++) {
-    b[i] = a.arr[a.n - i - 1];
-  }
-  for (int i = 0; i < a.n; i++) {
-    a.arr[i] = b[i];
+  for (int i = 0; i < a.n / 2; i++) {
+    swap(a.arr[i], a.arr[a.n - 1 - i]);
   }
 }
 // kiem tra doi xung
@@ -174,38 +178,34 @@ bool Doi_Xung(Array a) {
 }
 // dem mang con tang
 int DemMangTang(Array a) {
-  int dem1 = 0, dem2 = 0;
+  int count = 0;
   for (int i = 0; i < a.n - 1; i++) {
-    if (a.arr[i] < a.arr[i + 1]) dem1++;
-    if (a.arr[i] >= a.arr[i + 1]) {
-      if (dem1 != 0) {
-        dem2++;
-        dem1 = 0;
+    if (a.arr[i] < a.arr[i + 1]) {
+      ++count;
+      while (a.arr[i] <= a.arr[i + 1]) {
+        ++i;
       }
     }
   }
-  return dem2;
+  return count;
 }
 // kiem tra mang con
-bool KiemTraDayCon(Array a, Array b) {
-  if (b.n > a.n) return false;
+
+bool is_MangCon(Array a, Array b) {
+  int l1_count = 0, l2_count = 0;
   int i = 0, j = 0;
-  while (j < b.n) {
+  while (l1_count < a.n && l2_count < b.n) {
     if (a.arr[i] == b.arr[j]) {
-      if (i == a.n - 1)
-        return true;
-      else {
-        j++;
-        i++;
-      }
-    } else {
-      if (j == b.n - 1)
-        return false;
-      else {
-        j++;
-      }
+      ++l1_count;
+      ++i;
     }
+    ++l2_count;
+    ++j;
   }
+  if (l1_count == a.n) {
+    return true;
+  }
+  return false;
 }
 tuple<Array, Array, Array> PhanHoach(Array a, int x) {
   Array m, n, p;
@@ -240,6 +240,7 @@ Array TronTangDan(Array a, Array b) {
   Array c;
   init_array(c);
   c.n = a.n + b.n;
+  c.arr = new int[c.n];
   c.capacity = a.capacity + b.capacity;
   for (int i = 0; i < c.n; i++) {
     if (i < a.n) {
@@ -247,7 +248,6 @@ Array TronTangDan(Array a, Array b) {
     } else
       c.arr[i] = b.arr[i - a.n];
   }
-  insertion_sort(c.arr, c.n);
   return c;
 }
 pair<Array, Array> TachMang(Array a) {
@@ -269,7 +269,35 @@ pair<Array, Array> TachMang(Array a) {
   }
   return A;
 }
-
+int Sub_arr_arr(Array a) {
+  int temp = 0, count = 0;
+  for (int i = 0; i < a.n - 1; i++) {
+    if (a.arr[i + 1] >= a.arr[i]) {
+      ++count;
+    }
+    if (a.arr[i + 1] < a.arr[i]) {
+      count = 0;
+    }
+    if (count > temp) {
+      temp = count;
+    }
+  }
+  return temp + 1;
+}
+Array Link_array(Array a, Array b) {
+  Array c;
+  init_array(c);
+  c.n = a.n + b.n;
+  c.arr = new int[c.n];
+  c.capacity = a.capacity + b.capacity;
+  for (int i = 0; i < c.n; i++) {
+    if (i < a.n) {
+      c.arr[i] = a.arr[i];
+    } else
+      c.arr[i] = b.arr[i - a.n];
+  }
+  return c;
+}
 ///////////////////////////////////
 
 //////////////////////////////////
@@ -673,12 +701,23 @@ List merge_2_sorted_lists(List &l1, List &l2) {
     return l2;
   }
 }
-
+int Sub_arr_List(List l) {
+  int count = 0;
+  for (Node *p = l.head; p != nullptr; p = p->next) {
+    if (p->value < p->next->value) {
+      ++count;
+      while (p->value <= p->next->value) {
+        p = p->next;
+      }
+    }
+  }
+  return count;
+}
 //////////////////////////////////
 
 int main() {
   // Khai bao
-  int number = 100000;  // cho so vao day
+  int number = 10;  // cho so vao day
   high_resolution_clock::time_point t1, t2;
   duration<double> time_span;
   List l;
@@ -686,25 +725,25 @@ int main() {
   Array a;
   init_array(a);
   srand(time(NULL));
-  // So sanh
-  /* Recycle key_word
-   t1 = high_resolution_clock::now();
-   t2 = high_resolution_clock::now();
-   time_span = duration_cast<duration<double>>(t2 - t1);
-   cout << " " << time_span.count() << " seconds.\n";*/
-  // thao tac 1
-  for (int i = 0; i < 5; i++) {
-    Add_Tail(l, i);
+  for (int i = 0; i < number; i++) {
+    int x = rand();
+    Input_Array(a, x);
+    Add_Tail(l, x);
   }
-  OutPut_list(l);
-  cout << "\n";
-  for (int i = 0; i < 5; i++) {
-    Insert_list(l, i / 2, -1);
-  }
-  OutPut_list(l);
+  // So sanh mang dong
 
-  // thao tac 2
+  t1 = high_resolution_clock::now();
 
+  t2 = high_resolution_clock::now();
+  time_span = duration_cast<duration<double>>(t2 - t1);
+  cout << "Dynamic Array " << time_span.count() << " seconds.\n";
+
+  // so sanh danh sach lien ket
+  t1 = high_resolution_clock::now();
+
+  t2 = high_resolution_clock::now();
+  time_span = duration_cast<duration<double>>(t2 - t1);
+  cout << "Linked List " << time_span.count() << " seconds.\n";
   //
 
   return 0;
