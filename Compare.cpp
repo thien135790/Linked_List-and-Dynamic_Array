@@ -490,7 +490,7 @@ int main() {
   }
   OutPut(l);
   cout << "\n";
-
+  
   SelectionSort(l);
   OutPut(l);
 
