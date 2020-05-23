@@ -28,250 +28,248 @@ void init_list(List &l) { l.head = l.tail = NULL; }
 ///////////////////////////////////
 //      Dynamic_array      //
 // #Add code here
-void Input_Array(Array& a, int x) { //them phan tu vao cuoi mang
-    if (a.n == 0) {
-        a.arr = new int[2];
-        a.arr[0] = x;
-        a.n = 1; a.capacity = 2;
-    }
-    else if (a.n < a.capacity) {
-        a.arr[a.n] = x;
-        a.n++;
-    }
-    else if (a.n >= a.capacity) {
-        auto b = new int[a.capacity * 2];
-        for (int i = 0; i < a.n; i++) { b[i] = a.arr[i]; }
-        b[a.n] = x;
-        delete a.arr;
-        a.arr = b;
-        a.n++;
-        a.capacity *= 2;
-    }
-}
-void Add_into_any_position(Array& a, int x, int pos) {              //them vao bat ky vi tri nao
-    if (a.n < a.capacity) {
-        if (pos == a.n) {
-            a.arr[a.n] = x;
-            a.n++;
-        }
-        else if (pos == 0) {
-            for (int i = a.n; i > 0; i--) {
-                a.arr[i] = a.arr[i - 1];
-            }
-            a.arr[0] = x;
-            a.n++;
-        }
-        else if (pos != 0 && pos != a.n) {
-            for (int i = a.n; i > pos; i--) {
-                a.arr[i] = a.arr[i - 1];
-            }
-            a.arr[pos] = x;
-            a.n++;
-        }
-    }
-    else {
-        auto b = new int[a.capacity * 2];
-        for (int i = 0; i < a.n; i++) {
-            b[i] = a.arr[i];
-        }
-        for (int i = a.n; i > pos; i--) {
-            b[i] = b[i - 1];
-        }
-        b[pos] = x;
-        delete a.arr;
-        a.arr = b;
-        a.n++;
-        a.capacity *= 2;
-    }
-}
-void Delete_any_position(Array& a, int pos) {           // xoa vi tri bat ky
-    if (a.n == 0);
-    else {
-        if (pos < a.n) {
-            for (int i = pos; i < a.n - 1; i++) {
-                a.arr[i] = a.arr[i + 1];
-            }
-            a.n--;
-        }
-    }
-}
-int DemSoLuongPhanTu(Array a) {                     // tra ve so luong phan tu cua mang
-    return a.n;
-}
-void Ouput_Array(Array a) {                         // xuat mang
+// them phan tu vao cuoi mang
+void Input_Array(Array &a, int x) {
+  if (a.n == 0) {
+    a.arr = new int[2];
+    a.arr[0] = x;
+    a.n = 1;
+    a.capacity = 2;
+  } else if (a.n < a.capacity) {
+    a.arr[a.n] = x;
+    a.n++;
+  } else if (a.n >= a.capacity) {
+    auto b = new int[a.capacity * 2];
     for (int i = 0; i < a.n; i++) {
-        cout << a.arr[i] << " ";
+      b[i] = a.arr[i];
     }
-    cout << endl;
+    b[a.n] = x;
+    delete a.arr;
+    a.arr = b;
+    a.n++;
+    a.capacity *= 2;
+  }
 }
-int search(Array a, int x) {                        //tim kiem tuyen tinh
+// them vao bat ky vi tri nao
+void Add_into_any_position(Array &a, int x, int pos) {
+  if (a.n < a.capacity) {
+    if (pos == a.n) {
+      a.arr[a.n] = x;
+      a.n++;
+    } else if (pos == 0) {
+      for (int i = a.n; i > 0; i--) {
+        a.arr[i] = a.arr[i - 1];
+      }
+      a.arr[0] = x;
+      a.n++;
+    } else if (pos != 0 && pos != a.n) {
+      for (int i = a.n; i > pos; i--) {
+        a.arr[i] = a.arr[i - 1];
+      }
+      a.arr[pos] = x;
+      a.n++;
+    }
+  } else {
+    auto b = new int[a.capacity * 2];
     for (int i = 0; i < a.n; i++) {
-        if (a.arr[i] == x) return i;
+      b[i] = a.arr[i];
     }
-    return -1;
+    for (int i = a.n; i > pos; i--) {
+      b[i] = b[i - 1];
+    }
+    b[pos] = x;
+    delete a.arr;
+    a.arr = b;
+    a.n++;
+    a.capacity *= 2;
+  }
 }
-void sort(int*& a, int n) {                         // sap xep mang
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (a[i] > a[j])
-                swap(a[i], a[j]);
-        }
+// xoa vi tri bat ky
+void Delete_any_position(Array &a, int pos) {
+  if (a.n == 0)
+    ;
+  else {
+    if (pos < a.n) {
+      for (int i = pos; i < a.n - 1; i++) {
+        a.arr[i] = a.arr[i + 1];
+      }
+      a.n--;
     }
+  }
 }
-int Bin(int* a, int l, int r, int x) {
-    if (l <= r) {
-        if (a[l] == x)
-            return l;
-        if (a[r] == x)
-            return r;
-        int m = (l + r) / 2;
-        if (a[m] == x)
-            return m;
-        if (a[m] < x)
-            return Bin(a, m + 1, r, x);
-        if (a[m] > x)
-            return Bin(a, l, m - 1, x);
-    }
-    return -1;
+// tra ve so luong phan tu cua mang
+int DemSoLuongPhanTu(Array a) { return a.n; }
+// xuat mang
+void Ouput_Array(Array a) {
+  for (int i = 0; i < a.n; i++) {
+    cout << a.arr[i] << " ";
+  }
+  cout << endl;
 }
-int Binasearch(Array& a, int x) {                   //tim kiem nhi phan
-    sort(a.arr, a.n);
-    int l = 0, r = a.n - 1;
-    return Bin(a.arr, l, r, x);
+// tim kiem tuyen tinh
+int search(Array a, int x) {
+  for (int i = 0; i < a.n; i++) {
+    if (a.arr[i] == x) return i;
+  }
+  return -1;
 }
-void Change_the_value_of_any_position(Array& a, int x, int pos) {            //thay doi vi tri bat ky
-    if (pos >= a.n);
-    else {
-        a.arr[pos] = x;
+// sap xep mang
+void sort(int *&a, int n) {
+  for (int i = 0; i < n - 1; i++) {
+    for (int j = i + 1; j < n; j++) {
+      if (a[i] > a[j]) swap(a[i], a[j]);
     }
+  }
 }
-void Copy(Array a, Array& b) {                          // sao chep mang A sang B
-    init_array(b);
-    b.n = a.n;
-    b.capacity = a.capacity;
-    for (int i = 0; i < b.n; i++) {
-        b.arr[i] = a.arr[i];
-    }
+int Bin(int *a, int l, int r, int x) {
+  if (l <= r) {
+    if (a[l] == x) return l;
+    if (a[r] == x) return r;
+    int m = (l + r) / 2;
+    if (a[m] == x) return m;
+    if (a[m] < x) return Bin(a, m + 1, r, x);
+    if (a[m] > x) return Bin(a, l, m - 1, x);
+  }
+  return -1;
 }
-void Dao_mang(Array& a) {                               // dao mang
-    auto b = new int[a.n];
-    for (int i = 0; i < a.n; i++) {
-        b[i] = a.arr[a.n - i - 1];
-    }
-    for (int i = 0; i < a.n; i++) {
-        a.arr[i] = b[i];
-    }
+// tim kiem nhi phan
+int Binasearch(Array &a, int x) {
+  sort(a.arr, a.n);
+  int l = 0, r = a.n - 1;
+  return Bin(a.arr, l, r, x);
 }
-bool Doi_Xung(Array a) {                                // kiem tra doi xung
-    for (int i = 0; i < a.n; i++) {
-        if (a.arr[i] != a.arr[a.n - i - 1]) return false;
-    }
-    return true;
+// thay doi vi tri bat ky
+void Change_the_value_of_any_position(Array &a, int x, int pos) {
+  if (pos >= a.n)
+    ;
+  else {
+    a.arr[pos] = x;
+  }
 }
-int DemMangTang(Array a) {                      //dem mang con tang
-    int dem1 = 0, dem2 = 0;
-    for (int i = 0; i < a.n - 1; i++) {
-        if (a.arr[i] < a.arr[i + 1])
-            dem1++;
-        if (a.arr[i] >= a.arr[i + 1]) {
-            if (dem1 != 0) {
-                dem2++;
-                dem1 = 0;
-            }
-        }
-    }
-    return dem2;
+// sao chep mang A sang B
+void Copy(Array a, Array &b) {
+  init_array(b);
+  b.n = a.n;
+  b.capacity = a.capacity;
+  for (int i = 0; i < b.n; i++) {
+    b.arr[i] = a.arr[i];
+  }
 }
-bool KiemTraDayCon(Array a, Array b) {                  //kiem tra mang con
-    if (b.n > a.n) return false;
-    int i = 0, j = 0;
-    while (j < b.n) {
-        if (a.arr[i] == b.arr[j]) {
-            if (i == a.n - 1) return true;
-            else {
-                j++;
-                i++;
-            }
-        }
-        else {
-            if (j == b.n - 1) return false;
-            else {
-                j++;
-            }
-        }
+// dao mang
+void Dao_mang(Array &a) {
+  auto b = new int[a.n];
+  for (int i = 0; i < a.n; i++) {
+    b[i] = a.arr[a.n - i - 1];
+  }
+  for (int i = 0; i < a.n; i++) {
+    a.arr[i] = b[i];
+  }
+}
+// kiem tra doi xung
+bool Doi_Xung(Array a) {
+  for (int i = 0; i < a.n; i++) {
+    if (a.arr[i] != a.arr[a.n - i - 1]) return false;
+  }
+  return true;
+}
+// dem mang con tang
+int DemMangTang(Array a) {
+  int dem1 = 0, dem2 = 0;
+  for (int i = 0; i < a.n - 1; i++) {
+    if (a.arr[i] < a.arr[i + 1]) dem1++;
+    if (a.arr[i] >= a.arr[i + 1]) {
+      if (dem1 != 0) {
+        dem2++;
+        dem1 = 0;
+      }
     }
+  }
+  return dem2;
+}
+// kiem tra mang con
+bool KiemTraDayCon(Array a, Array b) {
+  if (b.n > a.n) return false;
+  int i = 0, j = 0;
+  while (j < b.n) {
+    if (a.arr[i] == b.arr[j]) {
+      if (i == a.n - 1)
+        return true;
+      else {
+        j++;
+        i++;
+      }
+    } else {
+      if (j == b.n - 1)
+        return false;
+      else {
+        j++;
+      }
+    }
+  }
 }
 tuple<Array, Array, Array> PhanHoach(Array a, int x) {
-    Array m, n, p;
-    init_array(m);
-    init_array(n);
-    init_array(p);
-    if (a.n == 0) return make_tuple(m, n, p);
-    for (int i = 0; i < a.n; i++) {
-        if (a.arr[i] < x) {
-            Input_Array(m, a.arr[i]);
-        }
-        else if (a.arr[i] == x) {
-            Input_Array(n, a.arr[i]);
-        }
-        else if (a.arr[i] > x) {
-            Input_Array(p, a.arr[i]);
-        }
+  Array m, n, p;
+  init_array(m);
+  init_array(n);
+  init_array(p);
+  if (a.n == 0) return make_tuple(m, n, p);
+  for (int i = 0; i < a.n; i++) {
+    if (a.arr[i] < x) {
+      Input_Array(m, a.arr[i]);
+    } else if (a.arr[i] == x) {
+      Input_Array(n, a.arr[i]);
+    } else if (a.arr[i] > x) {
+      Input_Array(p, a.arr[i]);
     }
-    return make_tuple(m, n, p);
+  }
+  return make_tuple(m, n, p);
 }
-void insertion_sort(int* a, int n) {
-    int i, j, x;
-    for (i = 1; i < n; i++)
-    {
-        x = a[i];
-        j = i;
-        while (j > 0 && a[j - 1] > x)
-        {
-            a[j] = a[j - 1];
-            j--;
-        }
-        a[j] = x;
+void insertion_sort(int *a, int n) {
+  int i, j, x;
+  for (i = 1; i < n; i++) {
+    x = a[i];
+    j = i;
+    while (j > 0 && a[j - 1] > x) {
+      a[j] = a[j - 1];
+      j--;
     }
+    a[j] = x;
+  }
 }
 Array TronTangDan(Array a, Array b) {
-    Array c;
-    init_array(c);
-    c.n = a.n + b.n;
-    c.capacity = a.capacity + b.capacity;
-    for (int i = 0; i < c.n; i++) {
-        if (i < a.n) {
-            c.arr[i] = a.arr[i];
-        }
-        else c.arr[i] = b.arr[i - a.n];
-    }
-    insertion_sort(c.arr, c.n);
-    return c;
+  Array c;
+  init_array(c);
+  c.n = a.n + b.n;
+  c.capacity = a.capacity + b.capacity;
+  for (int i = 0; i < c.n; i++) {
+    if (i < a.n) {
+      c.arr[i] = a.arr[i];
+    } else
+      c.arr[i] = b.arr[i - a.n];
+  }
+  insertion_sort(c.arr, c.n);
+  return c;
 }
 pair<Array, Array> TachMang(Array a) {
-    pair<Array, Array> A;
-    init_array(A.first);
-    init_array(A.second);
-    if (a.n % 2 == 0) {
-        A.first.n = a.n % 2;
-        A.second.n = a.n % 2;
-    }
-    else {
-        A.first.n = a.n % 2;
-        A.second.n = (a.n % 2) + 1;
-    }
-    for (int i = 0; i < a.n; i++) {
-        if (i % 2 == 0) {
-            Input_Array(A.first, a.arr[i]);
-        }
-        else Input_Array(A.second, a.arr[i]);
-    }
-    return A;
-
+  pair<Array, Array> A;
+  init_array(A.first);
+  init_array(A.second);
+  if (a.n % 2 == 0) {
+    A.first.n = a.n % 2;
+    A.second.n = a.n % 2;
+  } else {
+    A.first.n = a.n % 2;
+    A.second.n = (a.n % 2) + 1;
+  }
+  for (int i = 0; i < a.n; i++) {
+    if (i % 2 == 0) {
+      Input_Array(A.first, a.arr[i]);
+    } else
+      Input_Array(A.second, a.arr[i]);
+  }
+  return A;
 }
 
-
-}
 ///////////////////////////////////
 
 //////////////////////////////////
