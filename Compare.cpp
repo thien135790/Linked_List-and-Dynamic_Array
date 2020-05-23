@@ -52,46 +52,51 @@ void Input_Array(Array &a, int x) {
   }
 }
 // them vao bat ky vi tri nao
-void Add_into_any_position(Array &a, int x, int pos) {
-  if (a.n < a.capacity) {
-    if (pos == a.n) {
-      a.arr[a.n] = x;
-      a.n++;
-    } else if (pos == 0) {
-      for (int i = a.n; i > 0; i--) {
-        a.arr[i] = a.arr[i - 1];
-      }
-      a.arr[0] = x;
-      a.n++;
-    } else if (pos != 0 && pos != a.n) {
-      for (int i = a.n; i > pos; i--) {
-        a.arr[i] = a.arr[i - 1];
-      }
-      a.arr[pos] = x;
-      a.n++;
+void Add_into_any_position(Array& a, int x, int pos) {
+    if (a.capacity > a.n) {
+        for (int i = a.n; i > pos; i--) {
+            a.arr[i] = a.arr[i - 1];
+        }
+        a.arr[pos] = x;
+        ++a.n;
     }
-  } else {
-    auto b = new int[a.capacity * 2];
-    for (int i = 0; i < a.n; i++) {
-      b[i] = a.arr[i];
+    else {
+        a.capacity = a.n;
+        ++a.capacity;
+        int* b = new int[++a.capacity];
+        for (int i = 0; i < pos; i++) {
+            b[i] = a.arr[i];
+        }
+        b[pos] = x;
+        for (int i = pos + 1; i <= a.n; i++) {
+            b[i] = a.arr[i - 1];
+        }
+        delete a.arr;
+        a.arr = b;
+        ++a.n;
     }
-    for (int i = a.n; i > pos; i--) {
-      b[i] = b[i - 1];
-    }
-    b[pos] = x;
-    delete a.arr;
-    a.arr = b;
-    a.n++;
-    a.capacity *= 2;
-  }
 }
 // xoa vi tri bat ky
-void Delete_any_position(Array &a, int index) {
-  a.n = a.capacity;
-  for (int i = index; i < a.n - 1; i++) {
-    a.arr[i] = a.arr[i + 1];
-  }
-  --a.n;
+void Delete_any_position(Array& a, int pos) {
+    if (pos == a.n - 1) {
+        int* b = new int[a.n - 1];
+        for (int i = 0; i < a.n - 1; i++) {
+            b[i] = a.arr[i];
+        }
+        delete a.arr;
+        a.arr = b;
+        a.n -= 1;
+        return;
+    }
+    if (a.n == 0);
+    else {
+        if (pos < a.n) {
+            for (int i = pos; i < a.n - 1; i++) {
+                a.arr[i] = a.arr[i + 1];
+            }
+            a.n--;
+        }
+    }
 }
 // tra ve so luong phan tu cua mang
 int DemSoLuongPhanTu(Array a) { return a.n; }
